@@ -7,15 +7,15 @@ from eco_helpers.visualization import draw_tracks
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-# Dictionary for camera names and links
+# Corrected Camera Sources
 CAMERA_SOURCES = {
-    "Nkorho Bush Lodge": "https://explore.org/livecams/african-wildlife/nkorho-bush-lodge",
-    "Tembe Elephant Park": "https://explore.org/livecams/african-wildlife/tembe-elephant-park",
-    "African Watering Hole": "https://explore.org/livecams/african-wildlife/african-watering-hole-animal-camera",
-    "Lisbon Falls": "https://explore.org/livecams/african-wildlife/lisbon-falls",
-    "HESC Cheetah Cam": "https://explore.org/livecams/african-wildlife/hesc-cheetah-cam-2",
-    "Africam Show": "https://explore.org/livecams/african-wildlife/africam-shows",
-    "Gorilla Forest Corridor": "https://explore.org/livecams/african-wildlife/gorilla-forest-corridor"
+    "Nkorho Bush Lodge": "https://youtu.be/dIChLG4_WNs",
+    "Rosie Pan": "https://youtu.be/ItdXaWUVF48",
+    "African Watering Hole": "https://youtu.be/KyQAB-TKOVA",
+    "Lisbon Falls": "https://youtu.be/9viZIxuonrI",
+    "HESC Cheetah Cam": "https://www.youtube.com/embed/luQSQuCHtcI",
+    "Africam Show": "https://www.youtube.com/embed/a0BME_RcftQ",
+    "Gorilla Forest Corridor": "https://youtu.be/yfSyjwY6zSQ"
 }
 
 # Stream generator function for live video feeds
@@ -65,6 +65,11 @@ def video_feed(camera_name):
     if not source:
         return "❌ Camera feed not available", 404
 
+    # Handling YouTube live streams (embedded format)
+    if "youtube" in source:
+        return render_template('camera_feed.html', camera_name=camera_name, camera_url=source)
+    
+    # For direct camera links
     return Response(generate_frames(source),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
