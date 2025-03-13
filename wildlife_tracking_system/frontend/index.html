@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife Conservation System</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="assets/images/logo.png" alt="Wildlife Conservation Logo" class="logo">
+            <h1>Wildlife Conservation System</h1>
+        </header>
+
+        <main>
+            <h2>Select a Camera Feed</h2>
+            <div class="camera-list">
+                <button onclick="selectCamera('Nkorho Bush Lodge')">Nkorho Bush Lodge</button>
+                <button onclick="selectCamera('Tembe Elephant Park')">Tembe Elephant Park</button>
+                <button onclick="selectCamera('African Watering Hole')">African Watering Hole</button>
+                <button onclick="selectCamera('Lisbon Falls')">Lisbon Falls</button>
+                <button onclick="selectCamera('HESC Cheetah Cam')">HESC Cheetah Cam</button>
+                <button onclick="selectCamera('Africam Show')">Africam Show</button>
+                <button onclick="selectCamera('Gorilla Forest Corridor')">Gorilla Forest Corridor</button>
+            </div>
+
+            <!-- Video Feed Display Area -->
+            <div id="camera-feed">
+                <p>Selected feed will appear here...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

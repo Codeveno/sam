@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.getcwd(), "yolov5"))  # Correct YOLOv5 path
 
 import torch
 from yolov5.models.common import DetectMultiBackend
-from yolov5.utils.general import check_img_size  # Ensures correct image size check
+from yolov5.utils.general import check_img_size
 
 def load_yolo_model():
     """

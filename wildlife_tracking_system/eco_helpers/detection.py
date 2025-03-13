@@ -1,4 +1,7 @@
-from utils.yolo import load_yolo_model
+
+
+from eco_helpers.yolo import load_yolo_model
+
 
 # Load YOLOv5 model
 model = load_yolo_model()

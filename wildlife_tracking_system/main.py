@@ -1,12 +1,11 @@
-import sys
-import os
-sys.path.append(os.path.join(os.getcwd(), "yolov5"))  # Ensure YOLOv5's utils is prioritized
-
+from flask import Flask, render_template, Response, request
 import cv2
 import threading
-from utils.detection import detect_animals
-from utils.tracking import track_objects
-from utils.visualization import draw_tracks
+from eco_helpers.detection import detect_animals
+from eco_helpers.tracking import track_objects
+from eco_helpers.visualization import draw_tracks
+
+app = Flask(__name__)
 
 # Dictionary for camera names and links
 CAMERA_SOURCES = {
@@ -19,25 +18,8 @@ CAMERA_SOURCES = {
     "Gorilla Forest Corridor": "https://explore.org/livecams/african-wildlife/gorilla-forest-corridor"
 }
 
-# Display options for camera selection
-print("\n📷 Select a Camera to View:")
-for i, cam in enumerate(CAMERA_SOURCES.keys(), 1):
-    print(f"{i}. {cam}")
-
-# Camera selection logic
-try:
-    choice = int(input("Enter the number of the camera you want to view: "))
-    if choice < 1 or choice > len(CAMERA_SOURCES):
-        raise ValueError("Invalid choice. Please select a valid camera number.")
-except ValueError as e:
-    print(f"❌ Error: {e}")
-    sys.exit(1)
-
-selected_camera_name = list(CAMERA_SOURCES.keys())[choice - 1]
-selected_camera_link = CAMERA_SOURCES[selected_camera_name]
-
-# Process selected camera stream
-def process_camera(source, window_name):
+# Stream generator function
+def generate_frames(source):
     cap = cv2.VideoCapture(source)
 
     if not cap.isOpened():
@@ -62,19 +44,30 @@ def process_camera(source, window_name):
         # Visualize results
         frame = draw_tracks(frame, tracks)
 
-        cv2.imshow(window_name, frame)
+        _, buffer = cv2.imencode('.jpg', frame)
+        frame_bytes = buffer.tobytes()
 
-        # Press 'q' to close the window
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            print(f"✅ Closing {window_name}")
-            break
+        # Yield the frame as a byte stream
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
     cap.release()
-    cv2.destroyWindow(window_name)
 
-# Start the selected camera feed in a separate thread
-camera_thread = threading.Thread(target=process_camera, args=(selected_camera_link, selected_camera_name))
-camera_thread.start()
+# Route to render `index.html`
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-# Ensure the main window closes cleanly
-cv2.destroyAllWindows()
+# Route for video feed display
+@app.route('/video_feed/<camera_name>')
+def video_feed(camera_name):
+    source = CAMERA_SOURCES.get(camera_name)
+    if not source:
+        return "❌ Camera feed not available", 404
+
+    return Response(generate_frames(source),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Run the Flask app
+if __name__ == "__main__":
+    app.run(debug=True)
