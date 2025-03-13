@@ -5,7 +5,7 @@ from eco_helpers.detection import detect_animals
 from eco_helpers.tracking import track_objects
 from eco_helpers.visualization import draw_tracks
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
 # Dictionary for camera names and links
 CAMERA_SOURCES = {
@@ -18,7 +18,7 @@ CAMERA_SOURCES = {
     "Gorilla Forest Corridor": "https://explore.org/livecams/african-wildlife/gorilla-forest-corridor"
 }
 
-# Stream generator function
+# Stream generator function for live video feeds
 def generate_frames(source):
     cap = cv2.VideoCapture(source)
 
@@ -41,7 +41,7 @@ def generate_frames(source):
         # Track animals using DeepSORT
         tracks = track_objects(detections, frame)
 
-        # Visualize results
+        # Visualize results with bounding boxes and labels
         frame = draw_tracks(frame, tracks)
 
         _, buffer = cv2.imencode('.jpg', frame)
