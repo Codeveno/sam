@@ -8,9 +8,9 @@ function selectCamera(cameraName) {
 
         // Redirect to correct feed handling page
         if (cameraURL.includes("youtube")) {
-            window.location.href = 'camera_feed.html'; // For YouTube live feeds
+            window.location.href = '/camera_feed'; // Corrected URL
         } else {
-            window.location.href = `/video_feed/${encodeURIComponent(cameraName)}`; // For direct video feeds
+            window.location.href = `/video_feed/${encodeURIComponent(cameraName)}`;
         }
     } else {
         alert('❌ Camera feed not available.');
@@ -19,7 +19,7 @@ function selectCamera(cameraName) {
 
 // Display the selected camera feed
 window.onload = function () {
-    const cameraFeedElement = document.getElementById('camera-feed');
+    const cameraFeedElement = document.getElementById('camera-feed-container'); // Corrected ID
     const cameraTitleElement = document.getElementById('camera-title');
     const selectedCameraURL = localStorage.getItem('selectedCameraURL');
     const selectedCameraName = localStorage.getItem('selectedCameraName');
@@ -50,13 +50,13 @@ window.onload = function () {
 // Dictionary of actual camera links
 function getCameraURL(cameraName) {
     const cameraFeeds = {
-        "Nkorho Bush Lodge": "https://youtu.be/dIChLG4_WNs",
-        "Rosie Pan": "https://youtu.be/ItdXaWUVF48",
-        "African Watering Hole": "https://youtu.be/KyQAB-TKOVA",
-        "Lisbon Falls": "https://youtu.be/9viZIxuonrI",
+        "Nkorho Bush Lodge": "https://www.youtube.com/embed/dIChLG4_WNs",
+        "Rosie Pan": "https://www.youtube.com/embed/ItdXaWUVF48",
+        "African Watering Hole": "https://www.youtube.com/embed/KyQAB-TKOVA",
+        "Lisbon Falls": "https://www.youtube.com/embed/9viZIxuonrI",
         "HESC Cheetah Cam": "https://www.youtube.com/embed/luQSQuCHtcI",
         "Africam Show": "https://www.youtube.com/embed/a0BME_RcftQ",
-        "Gorilla Forest Corridor": "https://youtu.be/yfSyjwY6zSQ"
+        "Gorilla Forest Corridor": "https://www.youtube.com/embed/yfSyjwY6zSQ"
     };
     return cameraFeeds[cameraName] || null;
 }

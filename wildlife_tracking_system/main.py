@@ -7,15 +7,15 @@ from eco_helpers.visualization import draw_tracks
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-# Corrected Camera Sources
+# Corrected Camera Sources with embed links for YouTube
 CAMERA_SOURCES = {
-    "Nkorho Bush Lodge": "https://youtu.be/dIChLG4_WNs",
-    "Rosie Pan": "https://youtu.be/ItdXaWUVF48",
-    "African Watering Hole": "https://youtu.be/KyQAB-TKOVA",
-    "Lisbon Falls": "https://youtu.be/9viZIxuonrI",
+    "Nkorho Bush Lodge": "https://www.youtube.com/embed/dIChLG4_WNs",
+    "Rosie Pan": "https://www.youtube.com/embed/ItdXaWUVF48",
+    "African Watering Hole": "https://www.youtube.com/embed/KyQAB-TKOVA",
+    "Lisbon Falls": "https://www.youtube.com/embed/9viZIxuonrI",
     "HESC Cheetah Cam": "https://www.youtube.com/embed/luQSQuCHtcI",
     "Africam Show": "https://www.youtube.com/embed/a0BME_RcftQ",
-    "Gorilla Forest Corridor": "https://youtu.be/yfSyjwY6zSQ"
+    "Gorilla Forest Corridor": "https://www.youtube.com/embed/yfSyjwY6zSQ"
 }
 
 # Stream generator function for live video feeds
@@ -65,13 +65,20 @@ def video_feed(camera_name):
     if not source:
         return "❌ Camera feed not available", 404
 
-    # Handling YouTube live streams (embedded format)
+    # Handling YouTube live streams (iframe rendering)
     if "youtube" in source:
         return render_template('camera_feed.html', camera_name=camera_name, camera_url=source)
-    
-    # For direct camera links
+
+    # For direct camera links (non-YouTube)
     return Response(generate_frames(source),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Route for YouTube feeds
+@app.route('/camera_feed')
+def camera_feed():
+    camera_url = request.args.get('url')
+    camera_name = request.args.get('name')
+    return render_template('camera_feed.html', camera_name=camera_name, camera_url=camera_url)
 
 # Run the Flask app
 if __name__ == "__main__":
